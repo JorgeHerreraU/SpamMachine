@@ -1,0 +1,212 @@
+@model SpamMachine.ViewModels.MessageViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="d-flex flex-column mb-4">
+    <div class="row p-5 rounded" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Subject" class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Subject" class="form-control text-white" />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Content" class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Content" class="form-control text-white" />
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Schedule"
+                            class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Schedule" class="form-control text-white" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")"/>
+                        <span asp-validation-for="Schedule" class="text-danger"></span>
+                    </div>
+                    <hr>
+                    <table id="categoriesTable" class="table text-white mt-4 table-curved">
+                        <thead>
+                            <th class="text-uppercase font-monospace" style="width: 95%">Category</th>
+                            <th style="width: 5%"></th>
+                        </thead>
+                        <tbody>
+                            @{
+                                @for (var i = 0; i < Model.Categories.Count; i++)
+                                {
+                                    <tr id="tablerow@(i)">
+                                        <td>
+                                            <div>
+                                                <input asp-for="Categories[i].Name" class="form-control text-white borderless"
+                                            required="required" />
+                                                <span asp-validation-for="Categories[i].Name" class="text-danger" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="removeCategory(@(i));"><i class="fa-solid fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-outline-light text-uppercase font-monospace" onclick="addCategory()">Add Category</button>
+                    <hr>
+                    <table id="usersTable" class="table text-white mt-4 table-curved">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase font-monospace">Firstname</th>
+                                <th class="text-uppercase font-monospace">Lastname</th>
+                                <th class="text-uppercase font-monospace">Email</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                @for (var i = 0; i < Model.Users.Count; i++)
+                                {
+                                    <tr id="tablerow@(i)">
+                                        <td>
+                                            <div>
+                                                <input asp-for="Users[i].Firstname" class="form-control text-white borderless" required="required" />
+                                                <span asp-validation-for="Users[i].Firstname" class="text-danger" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <input asp-for="Users[i].Lastname" class="form-control text-white borderless" required="required" />
+                                                <span asp-validation-for="Users[i].Lastname" class="text-danger" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <input type="email" asp-for="Users[i].Email" class="form-control text-white borderless"
+                                            required="required" />
+                                                <span asp-validation-for="Users[i].Email" class="text-danger" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="removeUser(@(i));"><i class="fa-solid fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-outline-light text-uppercase font-monospace" onclick="addUser()" id="addUserBtn">Add User</button>
+                    <hr>
+                    <div class="d-flex flex-row gap-3">
+                        <input type="submit" value="Save" class="btn btn-outline-light text-uppercase font-monospace" />
+                        <a asp-action="Index" class="btn btn-outline-light"><i class="fa-solid fa-left"></i> Back to List</a>
+                    </div>
+                </form>
+                <div>
+                    
+                </div>
+            </div>
+           
+        </div>
+        
+    </div>
+</div>
+
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    let usersCounter = @Model.Users.Count;
+    function addUser() {
+        $('<tr id="tablerow' + usersCounter + '"><td><div>' +
+            '<input type="text" class="form-control text-white borderless" id="Users_' + usersCounter + '__Firstname" name="Users[' + usersCounter + '].Firstname" required="required" data-val-required="The First Name field is required." data-val="true"/>' +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="Users[' + usersCounter + '].Firstname"/ data-valmsg-replace="true"></div></td>' +
+            '<td><div>' +
+            '<input type="text" class="form-control text-white borderless" id="Users_' + usersCounter + '__Lastname" name="Users[' + usersCounter + '].Lastname" required="required" data-val-required="The Last Name field is required." data-val="true"/>' +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="Users[' + usersCounter + '].Lastname"/ data-valmsg-replace="true"></div></td>' +
+            '<td><div>' +
+            '<input type="email" class="form-control text-white borderless"id="Users_' + usersCounter + '__Email" name="Users[' + usersCounter + '].Email" required="required" data-val-required="The Email field is required." data-val="true"/>' +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="Users[' + usersCounter + '].Email"/ data-valmsg-replace="true"></div></td>' +
+            '<td>' +
+            '<button type="button" class="btn btn-outline-light btn-sm" onclick="removeUser(' + usersCounter + ');"><i class="fa-solid fa-trash"></i>' +
+            '</td>' +
+            '</tr>').appendTo('#usersTable');
+        usersCounter++;
+        refreshValidators('#messageForm');
+        $("html, body").animate({ scrollTop: $(document).height() }, 100);
+        return false;
+    }
+    function removeUser(index) {
+        if (usersCounter > 0 && index > 0) {
+            $('#usersTable').find('#tablerow' + index).remove();
+            $('#usersTable').find('tbody').find('tr').each(function (i) {
+                $(this).find('input[name$=".Firstname"]').attr('name', 'Users[' + i + '].Firstname').attr('id', 'Users_' + i + '__Firstname');
+                $(this).find('input[name$=".Lastname"]').attr('name', 'Users[' + i + '].Lastname').attr('id', 'Users_' + i + '__Lastname');
+                $(this).find('input[name$=".Email"]').attr('name', 'Users[' + i + '].Email').attr('id', 'Users_' + i + '__Email');
+                $(this).find('button').attr('onclick', 'removeUser(' + i + ');');
+                $(this).attr('id', 'tablerow' + i);
+                $(this).find('span[data-valmsg-for$=".Firstname"').attr('data-valmsg-for', 'Users[' + i + '].Firstname');
+                $(this).find('span[data-valmsg-for$=".Lastname"').attr('data-valmsg-for', 'Users[' + i + '].Lastname');
+                $(this).find('span[data-valmsg-for$=".Email"').attr('data-valmsg-for', 'Users[' + i + '].Email');
+            });
+            refreshValidators('#messageForm');
+            usersCounter--;
+        }
+        return false;
+    }
+    let categoriesCounter = @Model.Categories.Count;
+    function addCategory() {
+        $('<tr id="tablerow' + categoriesCounter + '"><td><div>' +
+            '<input type="text" class="form-control borderless text-white" id="Categories_' + categoriesCounter + '__Name" name="Categories[' + categoriesCounter + '].Name" required="required" data-val-required="The Name field is required." data-val="true"/>' +
+            '<span class="text-danger field-validation-valid" data-valmsg-for="Categories[' + categoriesCounter + '].Name"/ data-valmsg-replace="true"></div></td>' +
+            '<td>' +
+            '<button type="button" class="btn btn-outline-light btn-sm" onclick="removeCategory(' + categoriesCounter + ');"><i class="fa-solid fa-trash"></i>' +
+            '</td>' +
+            '</tr>').appendTo('#categoriesTable');
+        categoriesCounter++;
+        refreshValidators('#messageForm');
+        autocomplete();
+        return false;
+    }
+    function removeCategory(index) {
+        if (categoriesCounter > 0 && index > 0) {
+            $('#categoriesTable').find('#tablerow' + index).remove();
+            $('#categoriesTable').find('tbody').find('tr').each(function (i) {
+                $(this).find('input[name$=".Name"]').attr('name', 'Categories[' + i + '].Name').attr('id', 'Categories_' + i + '__Name');
+                $(this).find('button').attr('onclick', 'removeCategory(' + i + ');');
+                $(this).attr('id', 'tablerow' + i);
+                $(this).find('span[data-valmsg-for$=".Name"').attr('data-valmsg-for', 'Categories[' + i + '].Name');
+            });
+            refreshValidators('#messageForm');
+            categoriesCounter--;
+        }
+        return false;
+    }
+    function refreshValidators(formSelector) {
+        const targetForm = $(formSelector);
+        targetForm.removeData('validator');
+        targetForm.removeData('unobtrusiveValidation');
+        targetForm.removeAttr('novalidate');
+        $.validator.unobtrusive.parse(targetForm);
+    }
+    function autocomplete() {
+        var categories = @Html.Raw(Json.Serialize(Model.AllCategories.Select(c => c.Name).ToArray()));
+        for (let i = 0; i < categoriesCounter; i++) {
+            $('#Categories_' + i + '__Name').autocomplete({
+                source: categories
+            });
+        }
+    }
+    function scrollToBottom() {
+        $("#addUserBtn").animate({ scrollTop: $("#formContainer")[0].scrollHeight }, 1000);
+    }
+    $(function () {
+        autocomplete();
+        addUser();
+        addCategory();
+    });
+
+</script>
+}

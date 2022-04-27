@@ -1,0 +1,44 @@
+@model SpamMachine.Models.User
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="d-flex flex-column mb-4">
+    <div class="row p-5 rounded" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Firstname"
+                            class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Firstname" class="form-control text-white" required="required" />
+                        <span asp-validation-for="Firstname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Lastname"
+                            class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Lastname" class="form-control text-white" required="required" />
+                        <span asp-validation-for="Lastname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label text-white text-uppercase font-monospace"></label>
+                        <input type="email" asp-for="Email" class="form-control text-white" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <hr>
+                    <div class="d-flex flex-row gap-3">
+                        <input type="submit" value="Save" class="btn btn-outline-light text-uppercase font-monospace" />
+                        <a asp-action="Index" class="btn btn-outline-light"><i class="fa-solid fa-left"></i> Back to
+                            List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

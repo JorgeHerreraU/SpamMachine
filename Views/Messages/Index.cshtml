@@ -1,0 +1,75 @@
+@model IEnumerable<SpamMachine.Models.Message>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex flex-column">
+    <a class="btn btn-outline-light" asp-action="Create"><i class="fa-regular fa-plus"></i> Create New</a>
+    <table class="table text-white mt-4 table-curved">
+        <thead>
+            <tr>
+                <th class="text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Subject)
+                </th>
+                <th class="text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Content)
+                </th>
+                <th class="text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Schedule)
+                </th>
+                <th class="text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.IsSent)
+                </th>
+                <th class="text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Categories)
+                </th>
+                <th class="text-uppercase font-monospace">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style=" max-width: 100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        @Html.DisplayFor(modelItem => item.Subject)
+                    </td>
+                    <td style="max-width: 100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    <td style="max-width: 100px;">
+                        @Html.DisplayFor(modelItem => item.Schedule)
+                    </td>
+                    <td style="width: 100px;">
+                        @Html.DisplayFor(modelItem => item.IsSent)
+                    </td>
+                    <td style="max-width: 100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        @{
+                            foreach (var category in item.Categories.Select((value, i) => new { i, value }))
+                            {
+                                <span class="btn btn-sm btn-outline-light" id="tag@(category.i)"
+                            style="cursor: default;">@category.value.Name</span>
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-light" asp-action="Edit" asp-route-id="@item.Id"><i
+                            class="fa-solid fa-pen-to-square"></i></a>
+                        <a class="btn btn-outline-light" asp-action="Details" asp-route-id="@item.Id"><i
+                            class="fa-solid fa-square-info"></i></a>
+                        <a class="btn btn-outline-light" asp-action="Delete" asp-route-id="@item.Id"><i
+                            class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+@section Scripts {
+<script>
+
+</script>
+}
