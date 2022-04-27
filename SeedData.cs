@@ -9,6 +9,7 @@ public static class SeedData
     public static void Initialize(IServiceProvider serviceProvider)
     {
         using var context = new AppDbContext(serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>());
+        context.Database.Migrate();
         if (context.Messages.Any()) return;
 
         context.Messages.AddRange(
