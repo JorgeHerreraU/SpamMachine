@@ -1,0 +1,77 @@
+@model SpamMachine.Models.Message
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<div>
+    <div class="row p-5 rounded">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6">
+                <div class="col-sm-2 text-white text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Subject)
+                </div>
+                <div class="col-sm-10 text-white">
+                    @Html.DisplayFor(model => model.Subject)
+                </div>
+                <div class="col-sm-2 text-white text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Content)
+                </div>
+                <div class="col-sm-10 text-white">
+                    @Html.DisplayFor(model => model.Content)
+                </div>
+                <div class="col-sm-2 text-white text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Schedule)
+                </div>
+                <div class="col-sm-10 text-white">
+                    @Html.DisplayFor(model => model.Schedule)
+                </div>
+                <div class="col-sm-2 text-white text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Categories)
+                </div>
+                <div class="col-sm-10 text-white">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <span>@category.Name</span>
+                    }
+                </div>
+                <div class="col-sm-2 text-white text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.IsSent)
+                </div>
+                <div class="col-sm-10">
+                    @Html.DisplayFor(model => model.IsSent)
+                </div>
+                <div class="col-sm-2 text-white text-uppercase font-monospace">
+                    @Html.DisplayNameFor(model => model.Users)
+                </div>
+                <div class="col-sm-10">
+                    <table class="table text-white table-curved">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td>@user.Firstname @user.Lastname</td>
+                                    <td>@user.Email</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex flex-row gap-3">
+                    <a asp-action="Edit" class="btn btn-outline-light text-uppercase font-monospace"
+                        asp-route-id="@Model?.Id">Edit</a>
+                    <a asp-action="Index" class="btn btn-outline-light text-uppercase font-monospace"><i
+                            class="fa-solid fa-left"></i>
+                        Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

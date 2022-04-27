@@ -1,0 +1,86 @@
+@model IOrderedEnumerable<SpamMachine.DTOs.MessageQueueReadDTO>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="row">
+        <table id="table" class="table text-white mt-4 table-curved">
+            <thead>
+                <tr>
+                    <th class="text-uppercase font-monospace">ID</th>
+                    <th class="text-uppercase font-monospace">Subject</th>
+                    <th class="text-uppercase font-monospace">Schedule</th>
+                    <th class="text-uppercase font-monospace">Status</th>
+                    <th class="text-uppercase font-monospace">Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/lib/signalr/signalr.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/jobshub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+    async function start() {
+        try {
+            await connection.start();
+            console.log("SignalR Connected.");
+        } catch (err) {
+            console.log(err);
+            setTimeout(start, 5000);
+        }
+    };
+    connection.onclose(async () => {
+        await start();
+    });
+    const table = $('#table').DataTable({
+        paging: false,
+        searching: false,
+        info: false,
+        columns: [
+            { data: 'id' },
+            { data: 'subject' },
+            { data: 'schedule' },
+            { data: 'status' },
+            { data: 'actions' }
+        ],
+    });
+    const messages = @Html.Raw(Json.Serialize(Model.ToArray()));
+    messages.forEach(message => {
+        message.actions = `<a href="/messages/edit/${message.id}" class="btn btn-outline-light"><i class="fa-solid fa-pen-to-square"></i></a><button onclick="onSendClick(${message.id}, this)" class="btn btn-outline-light ms-2"><i class="fa-duotone fa-mailbox"></i> Send Now</button>`
+        table.row.add(message).draw();
+    });
+    start();
+    connection.on("ReceiveMessages", function (messages) {
+        table.clear().draw();
+        messages.forEach(function (message) {
+            table.row.add({
+                "id": message.id,
+                "subject": message.subject,
+                "schedule": message.schedule,
+                "status": message.status,
+                "actions": `<a href="/messages/edit/${message.id}" class="btn btn-outline-light"><i class="fa-solid fa-pen-to-square"></i></a><button onclick="onSendClick(${message.id}, this)" class="btn btn-outline-light ms-2"><i class="fa-duotone fa-mailbox"></i> Send Now</button>`
+            }).draw();
+        });
+    });
+    function onSendClick(id, element) {
+        $.ajax({
+            url: `/queue/sendnow/${id}`,
+            method: 'POST',
+            success: function (data) {
+                $(element).html('<i class="fa-duotone fa-spinner fa-spin"></i> Sending...');
+            },
+            error: function (data) {
+                $(element).html('<i class="fa-duotone fa-times"></i> Error');
+            }
+        });
+    }
+</script>
+}

@@ -1,0 +1,97 @@
+@model SpamMachine.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+<div class="d-flex flex-column mb-4">
+    <div class="row p-5 rounded">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-6">
+                <form asp-action="Edit" id="userForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Firstname"
+                            class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Firstname" class="form-control text-white" />
+                        <span asp-validation-for="Firstname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Lastname"
+                            class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Lastname" class="form-control text-white" />
+                        <span asp-validation-for="Lastname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label text-white text-uppercase font-monospace"></label>
+                        <input asp-for="Email" class="form-control text-white" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <label asp-for="Messages" class="control-label text-white text-uppercase font-monospace"></label>
+                    <ul id="messages" class="list-group sortable-list connected">
+                        @{
+                            foreach (var message in Model.Messages!)
+                            {
+                                <li class="list-group-item text-white" >@message</li>
+                            }
+                        }
+                    </ul>
+                    <hr />
+                    <label asp-for="AllMessages" class="control-label text-white text-uppercase font-monospace"></label>
+                    <ul id="allMessages" class="list-group sortable-list connected">
+                        @{
+                            foreach (var message in Model.AllMessages)
+                            {
+                                <li class="list-group-item text-white">@message.Subject</li>
+                            }
+                        }
+                    </ul>
+                    <input type="hidden" asp-for="Id" />
+                    <hr>
+                    <div class="d-flex flex-row gap-3">
+                        <input type="submit" value="Save" class="btn btn-outline-light text-uppercase font-monospace" />
+                        <a asp-action="Index" class="btn btn-outline-light"><i class="fa-solid fa-left"></i> Back to
+                            List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+
+$('#userForm').submit((e) => {
+    e.preventDefault();
+    sendData();
+});
+$(function() {
+    $("#messages, #allMessages" ).sortable({
+        connectWith: ".connected"
+    }).disableSelection();
+});
+function sendData() {
+    const form = $('#userForm');
+    const data = form.serializeArray();
+    $('#messages li').each(function (e) {
+        data.push({name: 'Messages', value: this.innerText});
+    });
+    $.ajax({
+        type: 'POST',
+        data: data,
+        url: '/Users/Edit/@Model.Id',
+        dataType: 'json',
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        success: function(res) {
+            if (res.result == 'Redirect') {
+                window.location = res.url;
+            }
+        },
+        error: function (res) {
+            console.log(res);
+        }
+    });
+}
+</script>
+}
