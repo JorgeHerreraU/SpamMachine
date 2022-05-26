@@ -6,7 +6,7 @@ A very simple app to send predefined messages to your friends or colleagues.
 
 No real email service implementation has been done to avoid missusage.
 
-[SPAM MACHINE WEBSITE](https://spam-machine.azurewebsites.net/)
+[SPAM MACHINE WEBSITE](https://spammachine.azurewebsites.net/)
 
 ## Installation
 Download .NET 6 Runtime & SDK
